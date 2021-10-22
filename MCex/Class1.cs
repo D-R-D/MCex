@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -9,9 +10,9 @@ namespace MCex
         private static bool req_flag = false;
         private static bool res_flag = false;
 
-        public static List<string> MulticastSercher(string mc_address , string yc_address , int reqport , int resport , int timeout = 1000)
+        public static async Task<List<string>> MulticastSercher(string mc_address, string yc_address, int reqport, int resport, int timeout = 1000)
         {
-            if(req_flag == true)
+            if (req_flag == true)
             {
                 return null;
             }
@@ -22,29 +23,24 @@ namespace MCex
             MCRequester.RequestSender(mc_address, yc_address, reqport);
 
             //非同期の別スレッドでリクエストをListen
-            Task.Run(() =>
-            {
-                list = MCRequester.ResponceListener(mc_address, yc_address, resport);
-            });
+            MCRequester.ResponceListener(mc_address, yc_address, resport);
 
 
             //udpclientの終了処理
             Thread.Sleep(timeout);
             MCRequester.flag = true;
             MCRequester.udpClient.Close();
-            
-            //処理が確実に終了するまで待つ
-            MCRequester.mre.WaitOne();
-            MCRequester.mre.Reset(); //とりあえずリセット、いらないけど気持ち的においておく
+
+            list = MCRequester.reslist;
 
             Thread.Sleep(100);
 
             return list;
         }
 
-        public static void MulticastResponser(string mc_address , string yc_address , int reqport , int resport)
+        public static void MulticastResponser(string mc_address, string yc_address, int reqport, int resport)
         {
-            if(res_flag == true)
+            if (res_flag == true)
             {
                 return;
             }
@@ -52,10 +48,12 @@ namespace MCex
             res_flag = true;
 
             MCResponser.WaitRequest(mc_address, yc_address, reqport);
-            while(res_flag == true)
+
+            while (res_flag == true)
             {
                 MCResponser.mre.WaitOne();
-                MCResponser.SendResponse(mc_address , yc_address , resport);
+                MCResponser.SendResponse(mc_address, yc_address, resport);
+                MCResponser.mre.Reset();
             }
 
         }

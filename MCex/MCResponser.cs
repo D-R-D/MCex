@@ -16,6 +16,9 @@ namespace MCex
 
         public static void WaitRequest(string mc_address, string yc_address, int reqport)
         {
+            flag = false;
+            udpClient = null;
+
             IPEndPoint iPEnd = new IPEndPoint(IPAddress.Any, reqport);
             udpClient = new UdpClient(iPEnd);
             udpClient.JoinMulticastGroup(IPAddress.Parse(mc_address), IPAddress.Parse(yc_address));
@@ -32,31 +35,33 @@ namespace MCex
             {
                 rcvBytes = udp.EndReceive(ar, ref remoteEP);
             }
-            catch
+            catch (Exception ex)
             {
                 if (flag == true)
                 {
                     return;
                 }
+                Console.WriteLine(ex.Message);
             }
 
             string rcvMsg = Encoding.UTF8.GetString(rcvBytes);
-
-            if(rcvMsg == "search_request")
+            if (rcvMsg == "search_request")
             {
                 mre.Set();
             }
+
+            udp.BeginReceive(ReceiveCallback, udp);
         }
 
-        public static void SendResponse(string mc_address , string yc_address , int resport)
+        public static void SendResponse(string mc_address, string yc_address, int resport)
         {
             IPEndPoint iPEnd = new IPEndPoint(IPAddress.Parse(mc_address), resport);
-            UdpClient udpClient = new UdpClient(AddressFamily.InterNetwork);
-            udpClient.JoinMulticastGroup(IPAddress.Parse(mc_address), IPAddress.Parse(yc_address));
+            UdpClient udp = new UdpClient(AddressFamily.InterNetwork);
+            udp.JoinMulticastGroup(IPAddress.Parse(mc_address), IPAddress.Parse(yc_address));
 
             byte[] sendBytes = Encoding.UTF8.GetBytes("search_responce");
 
-            udpClient.Send(sendBytes, sendBytes.Length, iPEnd);
+            udp.Send(sendBytes, sendBytes.Length, iPEnd);
 
             mre.Reset();
         }
