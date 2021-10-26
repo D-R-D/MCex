@@ -69,6 +69,9 @@ namespace MCex
             //再度受信
             udp.BeginReceive(ReceiveCallback, udp);
         }
+        //
+        /**/
+        //
 
 
         //
