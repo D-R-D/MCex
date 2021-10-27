@@ -9,17 +9,17 @@ namespace MCex
 {
     class MCRequester
     {
-        //MCSearchから触りたい変数をpublicで宣言
-        public static List<string> reslist;
-        public static bool flag = false;
-        public static UdpClient udpClient;
-        public static ManualResetEvent mre = new ManualResetEvent(false);
+        //MCSearchから触りたい変数を宣言
+        internal static List<string> reslist;
+        internal static bool flag = false;
+        internal static UdpClient udpClient;
+        internal static ManualResetEvent mre = new ManualResetEvent(false);
 
 
         //
         /*レスポンスの受信用メソッド*/
         //
-        public static void ResponceListener(string mc_address, string yc_address, int resport)
+        internal static void ResponceListener(string mc_address, string yc_address, int resport)
         {
             //各変数を初期化する
             reslist = null;
@@ -41,26 +41,7 @@ namespace MCex
 
         
         //
-        /*マルチキャストのrequest用ポートに送信*/
-        //
-        public static void RequestSender(string mc_address, string yc_address, int reqport)
-        {
-            //マルチキャストに参加したudpclientを作成する
-            IPEndPoint iPEnd = new IPEndPoint(IPAddress.Parse(mc_address), reqport);
-            UdpClient udp = new UdpClient(AddressFamily.InterNetwork);
-            udp.JoinMulticastGroup(IPAddress.Parse(mc_address), IPAddress.Parse(yc_address));
-
-            //リクエストパケットを作成・マルチキャストグループに送信する
-            byte[] sendBytes = Encoding.UTF8.GetBytes("search_request");
-            udp.Send(sendBytes, sendBytes.Length, iPEnd);
-        }
-        //
-        /**/
-        //
-
-
-        //
-        /**/
+        /*非同期udp受信*/
         //
         private static void ReceiveCallback(IAsyncResult ar)
         {
@@ -91,6 +72,25 @@ namespace MCex
 
             //再度受信
             udp.BeginReceive(ReceiveCallback, udp);
+        }
+        //
+        /**/
+        //
+
+
+        //
+        /*マルチキャストのrequest用ポートに送信*/
+        //
+        internal static void RequestSender(string mc_address, string yc_address, int reqport)
+        {
+            //マルチキャストに参加したudpclientを作成する
+            IPEndPoint iPEnd = new IPEndPoint(IPAddress.Parse(mc_address), reqport);
+            UdpClient udp = new UdpClient(AddressFamily.InterNetwork);
+            udp.JoinMulticastGroup(IPAddress.Parse(mc_address), IPAddress.Parse(yc_address));
+
+            //リクエストパケットを作成・マルチキャストグループに送信する
+            byte[] sendBytes = Encoding.UTF8.GetBytes("search_request");
+            udp.Send(sendBytes, sendBytes.Length, iPEnd);
         }
         //
         /**/

@@ -15,7 +15,7 @@ namespace MCex
         //
         /*マルチキャスト探査を行うメソッド*/
         //
-        public static async Task<List<string>> MulticastSercher(string mc_address, string yc_address, int reqport, int resport, int timeout = 1000)
+        public static List<string> MulticastSercher(string mc_address, string yc_address, int reqport, int resport, int timeout = 1000)
         {
             //フラッグで起動・停止の判別を行う
             //flag == true  →  起動中、nullをreturn
