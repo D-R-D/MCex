@@ -3,8 +3,8 @@ Multicast Searcher
 
 ただマルチキャスト探査するだけ。  
 自己満仕様  
-  
-  
+.  
+.  
 マルチキャスト探査する側(マルチキャストでリクエスト送信＆レスポンス受信)  
 List<string> MCex.MCSearch.MulticastSercher(string mc_address ,string yc_address ,int reqport ,int resport ,int timeout)  
     
