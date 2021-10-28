@@ -72,7 +72,6 @@ namespace MCex
                 MCResponser.SendResponse(mc_address, yc_address, resport);
                 MCResponser.mre.Reset();
             }
-
         }
         //
         /**/
