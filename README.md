@@ -12,4 +12,4 @@ List<string> MCex.MCSearch.MulticastSercher(string mc_address ,string yc_address
 void MCex.MCSearch.MulticastResponser(string mc_address ,string yc_address ,int reqport , int resport)  
   
 マルチキャスト探査に反応する側を終了させる  
-void MCex.MCSearch.StopResponser
+void MCex.MCSearch.StopResponser()
