@@ -26,13 +26,12 @@ namespace MCex
 
             //空のlistを作成
             List<string> list = new();
-
+       
+            //非同期の別スレッドでレスポンスをListen
+            MCRequester.ResponceListener(mc_address, yc_address, resport);
+            
             //レスポンスのリクエストを送信
             MCRequester.RequestSender(mc_address, yc_address, reqport);
-
-            //非同期の別スレッドでリクエストをListen
-            MCRequester.ResponceListener(mc_address, yc_address, resport);
-
 
             //udpclientの終了処理
             Thread.Sleep(timeout);
@@ -41,7 +40,7 @@ namespace MCex
 
             list = MCRequester.reslist;
 
-            Thread.Sleep(100);
+            Thread.Sleep(10);
 
             return list;
         }

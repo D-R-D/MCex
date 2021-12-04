@@ -61,6 +61,8 @@ namespace MCex
                     return;
                 }
                 Console.WriteLine(ex.Message);
+
+                reslist.Add(ex.Message);
             }
 
             //受信パケットが特定の値のときにreslistにipアドレスを追加する
