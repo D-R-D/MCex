@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
+
+
 namespace MCex
 {
     public class MCSearch
@@ -39,8 +41,6 @@ namespace MCex
             MCRequester.udpClient.Close();
 
             list = MCRequester.reslist;
-
-            Thread.Sleep(10);
 
             return list;
         }
@@ -91,5 +91,16 @@ namespace MCex
         /**/
         //
 
+        //
+        //*requesterを停止するメソッド*//
+        //
+        public static void StopRequester()
+        {
+            MCRequester.flag = true;
+            MCRequester.udpClient.Close();
+        }
+        //
+        /**/
+        //
     }
 }
